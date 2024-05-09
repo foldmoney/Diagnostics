@@ -223,14 +223,19 @@ extension DiagnosticsLogger {
 
         guard
             var data = try? Data(contentsOf: self.logFileLocation, options: .mappedIfSafe),
-            !data.isEmpty else {
-            return assertionFailure("Trimming the current log file failed")
+            !data.isEmpty,
+            let newline = "\n".data(using: .utf8) else {
+                return assertionFailure("Trimming the current log file failed")
         }
 
-        let trimmer = LogsTrimmer(numberOfLinesToTrim: 10)
-        trimmer.trim(data: &data)
+        var position: Int = 0
+        while (logSize - Int64(position)) > (maximumSize - trimSize) {
+            guard let range = data.firstRange(of: newline, in: position ..< data.count) else { break }
+            position = range.startIndex.advanced(by: 1)
+        }
 
-        logSize = Int64(data.count)
+        logSize -= Int64(position)
+        data.removeSubrange(0 ..< position)
 
         guard (try? data.write(to: logFileLocation, options: .atomic)) != nil else {
             return assertionFailure("Could not write trimmed log to target file location: \(logFileLocation)")
