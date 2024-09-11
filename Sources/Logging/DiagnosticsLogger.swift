@@ -21,7 +21,7 @@ import UIKit
 public final class DiagnosticsLogger {
     static let standard = DiagnosticsLogger()
 
-    private lazy var logFileLocation: URL = FileManager.default.documentsDirectory.appendingPathComponent("diagnostics_log_2.txt")
+    private lazy var logFileLocation: URL = FileManager.default.documentsDirectory.appendingPathComponent("diagnostics_log_3.txt")
 
     private let inputPipe = Pipe()
     private let outputPipe = Pipe()
