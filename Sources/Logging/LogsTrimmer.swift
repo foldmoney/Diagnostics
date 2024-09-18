@@ -7,15 +7,6 @@
 
 import Foundation
 
-//
-//  LogsTrimmer.swift
-//
-//
-//  Created by Antoine van der Lee on 01/03/2024.
-//
-
-import Foundation
-
 struct LogsTrimmer {
     let numberOfLinesToTrim: Int
 
@@ -38,7 +29,7 @@ struct LogsTrimmer {
                 in: logs,
                 range: NSRange(location: 0, length: logs.utf16.count)
             )
-            .suffix(numberOfLinesToTrim)
+            .prefix(numberOfLinesToTrim)
 
         guard let firstMatch = matches.first, let lastMatch = matches.last else {
             return
