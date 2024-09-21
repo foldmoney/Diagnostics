@@ -15,8 +15,22 @@ struct LogsReporter: DiagnosticsReporting {
 
     var diagnostics: String {
         do {
-            guard let data = try DiagnosticsLogger.standard.readLog(), let logs = String(data: data, encoding: .utf8) else {
-                return "Parsing the log failed (Unknown error)"
+            guard let data = try DiagnosticsLogger.standard.readLog() else {
+                return "Could not readLog() from Diagnostics"
+            }
+                  
+            guard let logs = String(data: data, encoding: .utf8) else {
+                var logString = ""
+                let encodings: [String.Encoding] = [.utf8, .ascii, .utf16, .utf32]
+
+                for encoding in encodings {
+                    if let string = String(data: data, encoding: encoding) {
+                        logString += "Decoded as \(encoding): \(string) \n"
+                        break
+                    }
+                }
+
+                return "Parsing the log failed - could not get String from data: \n \(logString)"
             }
 
             let sessions = logs.components(separatedBy: "\n\n---\n\n").reversed()
